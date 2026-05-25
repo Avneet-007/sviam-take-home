@@ -1,4 +1,4 @@
-# Submission | [Your Name]
+# Submission | Avneet Kaur Sandhu
 
 ## Part 1: Prompt
 
