@@ -159,11 +159,18 @@ Any session where confidence != high should go to a human review queue, not be a
 
 _List every assumption you made. Example: "I assumed typing speed variance is more informative than absolute typing speed because..."_
 
-1. ...
-2. ...
+1. The inclusion of memorised solutions in organic. 
+2. Assumption that the key logger accuratly captures the Ctrl+V from fast typing
+3. content_length in paste events estimates the actual pasted code size
+4. Speed variance is computed per-session as max − min of burst averages
 
 ---
 
 ## Process Log
 
 _One paragraph: what did you try, what did the AI get wrong on the first pass, how did you catch it and fix it? This tells us whether you were driving or riding._
+
+My first approach sent the raw session JSON directly to Claude and asked it to classify. The model ignored most of the event data and instead focused on code style. It labeled session_06 as ai_generated because the code had a JSDoc comment and type annotations.
+I saw that the paste event included only the comment template, not the function body. To fix this, I computed features before the API call.
+The second important change was restructuring the speed guidance. I led with variance instead of absolute speed. The first draft of the prompt said "< 100ms = suspicious," which would have flagged session_09 as clean. Session_09 was a slow, thoughtful organic session that still had some bursts at 140ms. 
+I added the deterministic pre-filter last to manage the obvious mechanical cases without LLM involvement.
