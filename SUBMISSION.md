@@ -82,8 +82,15 @@ FORMAT FOR THE OUTPUT- JSON only, no markdown:
 ### Prompt Design Notes
 
 _Why did you structure the prompt this way? What signals does it focus on? What did you try that did not work?_
- What I focused majorly on was the hint given "typing speed variance matters more than typing speed". A fast typist may average 90ms/key. BUt will show as natural arounnd 50 ms could be fast when typing and alow when thinking. Absoute speed would be a weak signal and variance would help to discriminate better. 
+
+What I focused majorly on was the hint given "typing speed variance matters more than typing speed". A fast typist may average 90ms/key. BUt will show as natural arounnd 50 ms could be fast when typing and alow when thinking. Absoute speed would be a weak signal and variance would help to discriminate better. 
 The first draft just sent the raw JSON file into the LLM and asked it to classify. This resulted in the ignorance of the event data. Also session 6 of being AI generated. Then I added the paste content preview feature which fixed this problem 
+
+I added a deterministic pre-filter before the LLM call. Three rules fire before any API call:
+
+Single paste >=80% of code + zero deletions:  pasted, high confidence
+All keystroke bursts under 75ms with variance <20ms:  ai_generated, high confidence
+
 ---
 
 ## Part 2: Evaluation
